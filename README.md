@@ -5,7 +5,7 @@
 
 ## Project
 - 주제: 
-- 팀원: 김채형, 최윤서
+- 팀원: 김채형, 최윤서(sycy0220@sookmyung.ac.kr)
 ### Project Plan
 > 1주차(~5/14) - 데이터셋 선정/ 주요 질문 선정
 > 
