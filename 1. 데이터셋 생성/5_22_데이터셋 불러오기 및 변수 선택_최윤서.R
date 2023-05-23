@@ -1,10 +1,9 @@
 library(dplyr)
-
 #2015
 ##데이터셋 불러오기
 setwd("C:/CYS/의생명통계학/기말과제")
 load("C:/CYS/의생명통계학/기말과제/NSDUH_2015.RData")
-df_1<-PUF2015_021518 #실수로 변수명 이상하게 바꿈. ..다시 불러오기..
+df_1<-PUF2015_021518 
 rm(PUF2015_021518)
 
 ##변수명 바꾸기
@@ -20,7 +19,8 @@ var<-c("QUESTID2","IRSEX",
        "YETCGJOB","YEPGDJOB","YOSEEDOC",
        "YEYFGTSW","YEYSTOLE",
        "HPDRGTALK","SNRLGSVC",
-       "PRXYDATA")
+       "PRXYDATA",
+       "YODPREV","YOWRHRS","YOLOSEV","YODSCEV")
 df_2015<-df_1[,var]       
 df_2015$YEAR<-2015 #year변수 생성
 
@@ -43,7 +43,8 @@ select_var<-function(df,new_df,year){
          "YETCGJOB","YEPGDJOB","YOSEEDOC",
          "YEYFGTSW","YEYSTOLE",
          "HPDRGTALK","SNRLGSVC",
-         "PRXYDATA")
+         "PRXYDATA",
+         "YODPREV","YOWRHRS","YOLOSEV","YODSCEV")
   new_df<-df[,var]       
   new_df$YEAR<-year #year변수 생성
   return (new_df)
@@ -79,7 +80,8 @@ var<-c("QUESTID2","IRSEX",
        "YETCGJOB","YEPGDJOB","YOSEEDOC",
        "YEYFGTSW","YEYSTOLE",
        "HPDRGTALK","SNRLGSVC",
-       "PRXYDATA","YEAR")
+       "PRXYDATA",
+       "YODPREV","YOWRHRS","YOLOSEV","YODSCEV","YEAR")
 colnames(df_2015)<-var
 final_df<-rbind(df_2015,df_2016,df_2017,df_2018,df_2019)
 write.csv(final_df,file="final_df.csv")
