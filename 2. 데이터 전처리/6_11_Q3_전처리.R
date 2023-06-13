@@ -45,7 +45,6 @@ new_df2<-read.csv("new_df2.csv")
 sample_id_df<-new_df2%>%
   filter((edu %in% c(4,5))&
            (type %in% c(5,6))&
-#           (type==5)&
            (g506 %in% c(1,2,3,4,5))&
            (g101==2))
 total_df0<-total_df%>%filter(sampid %in% sample_id_df$sampid)
@@ -57,14 +56,18 @@ sum(is.na(total_df0$yob)) #결측치 없음
 ##3) 성별 
 table(total_df0$gender) #결측치만 삭제
 sum(is.na(total_df0$gender)) 
-table(total_df0$g112)
+##성별을 0, 1로 바꾸기(남자:0, 여자:1)
+total_df0$gender<-total_df0$gender-1
 ##4) 배우자 월평균 소득
 ##**추가) 배우자가 직업이 없으면 0.
 total_df4<-total_df0%>%filter(((g112 %in% c(1,2,3,4))&(g115 %in% 1:9))|
-                                g112 %in% c(5,6,7,8,9,10,97))%>%#배우자 월평균 소득 결측치 처리 완료
-  mutate(spouse_money=ifelse(g112>=5,0,ifelse(g115<=8,1,2)))
+                                g112 %in% c(5,6,7,8,9,10,97))#배우자 월평균 소득 결측치 처리 완료
+
+total_df4["g115"][is.na(total_df4["g115"])]<-0  
+total_df4<-total_df4%>%
+  mutate(spouse_money_1=ifelse((g115<=6),1,0))
 sum(is.na(total_df4$spouse_money)) 
-table(total_df4$spouse_money)
+
 ##5) 부모 외에 아이를 돌보는 사람이 있는가. 
 var_b1<-paste0("g",seq(871,920)) 
 total_df5_1<-total_df4[var_b1]#양육 관련 변수만 추출
@@ -77,6 +80,10 @@ total_df5_2[var_baby][is.na(total_df5_2[var_baby])]<-0
 #871,876,...916를 뺀 모든 것을 더하기. 
 total_df5_2$baby_care<-rowSums(total_df5_2[var_baby])
 table(total_df5_2$baby_care) #아무도 안 도와주는 사람이..이렇게나 많아..?흠..
+
+
+##아이양육자 변수를 1또는 0으로 바꾸기. 
+total_df5_2[total_df5_2$baby_care!=0,]$baby_care<-1
 ##6) 직업군 대분류, 7) 고용형태
 total_df6<-total_df5_2%>%
   filter(((type==5)&(b156z !="99"))|(type!=5))%>%
@@ -90,20 +97,34 @@ total_df7<-total_df6
 total_df7[total_df7$b156z>=2,"b156z"]<-2
 table(total_df7$b156z)
 #8) 최종학력
-total_df8<-total_df7%>%filter(edu %in% c(4,5))
+total_df8_1<-total_df7%>%filter(edu %in% c(4,5))
+#최종학력: 석사이상이면 1, 아니면 0. 
+total_df8_1$edu<-total_df8_1$edu-4
 #9) 취업여부
-total_df9<-total_df8%>%filter(type %in% c(3,4,5,6))
+total_df9_1<-total_df8_1%>%filter(type %in% c(3,4,5,6))
+total_df9<-total_df9_1
+total_df9[total_df9_1$type==5,]$type<-1 #취업함
+total_df9[total_df9_1$type!=5,]$type<-0 #취업 안함
+
+
+
+
+#id값을 factor로
+total_df9$sampid<-as.factor(total_df9$sampid)
+#id변수 정렬하기
+total_df9<-total_df9[order(total_df9$sampid),]
+
 
 #4. 최종 데이터셋 저장
-final_df_0611<-total_df9%>%select(c("sampid","yob","gender","spouse_money","baby_care",
-                                     "b156z","b308","edu","type","year"))
-table(final_df_0611%>%filter((year==2016))%>%select(type))
+final_df_0612<-total_df9%>%select(c("sampid","yob","gender","spouse_money_1","baby_care",
+                                     "b156z","b308","edu","type","year","g115"))
+table(final_df_0612%>%filter((year==2016))%>%select(type))
 
-table(final_df_0611$type) #다행이다...있다..
+table(final_df_0612$type) #다행이다...있다..
 ##변수명 바꾸기. 
-colnames(final_df_0611)<-c("id","출생연도","성별","배우자월평균소득","아이양육자",
-                           "직업군대분류","고용형태","최종학력","취업유무","조사연도")
-write.csv(final_df_0611,"final_df_0611_1.csv",row.names=FALSE)
+colnames(final_df_0612)<-c("id","출생연도","성별","배우자월평균소득_400미만","아이양육자",
+                           "직업군대분류","고용형태","최종학력","취업유무","조사연도","g115")
+write.csv(final_df_0612,"final_df_0613_1.csv",row.names=FALSE)
 
 #b<-total_df1%>%filter( %in% c(1,2,3,4,5))%>%
 #  filter_at(vars(c(y10b225,y10b220,y10b221,y10b222,y10b223)),all_vars(. <9090908))
