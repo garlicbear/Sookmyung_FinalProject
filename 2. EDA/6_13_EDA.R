@@ -1,5 +1,5 @@
 setwd("C:/CYS/의생명통계학/기말과제_청년고용조사")
-final_df<-read.csv("final_df_0612_2.csv")
+final_df<-read.csv("final_df_0613_1.csv")
 final_df[1:10,]
 
 df_2016<-final_df[final_df$조사연도==2016,]
@@ -66,15 +66,15 @@ bar_sex2<-ggplot(data=final_df,aes(x=조사연도,group=배우자월평균소득
             colour = "black",
             vjust=-0.5)
 bar_sex2
-#2) 배우자월평균소득_300미만
-final_df$배우자월평균소득_300미만<-as.factor(final_df$배우자월평균소득_300미만)
+#2) 배우자월평균소득_400미만
+final_df$배우자월평균소득_400미만<-as.factor(final_df$배우자월평균소득_400미만)
 
-bar_sex2<-ggplot(data=final_df,aes(x=조사연도,group=배우자월평균소득_300미만,fill=배우자월평균소득_300미만))+
+bar_sex2<-ggplot(data=final_df,aes(x=조사연도,group=배우자월평균소득_400미만,fill=배우자월평균소득_400미만))+
   geom_bar(position = 'dodge' )  +
-  labs(title="조사연도에 따른 배우자월평균소득_300미만 분포")+
-  scale_fill_discrete(labels=c("0만원 초과 300만원미만","그외"))+
+  labs(title="조사연도에 따른 배우자월평균소득_400미만 분포")+
+  scale_fill_discrete(labels=c("400만원 이상","400만원 미만"))+
   theme_classic()+
-  geom_text(aes(label = after_stat(count),group=배우자월평균소득_300미만), 
+  geom_text(aes(label = after_stat(count),group=배우자월평균소득_400미만), 
             stat = "count", 
             position=position_dodge(width=0.9),
             colour = "black",
@@ -124,6 +124,22 @@ bar_sex2<-ggplot(data=df_2016,aes(x=성별,group=취업유무,fill=취업유무)
             colour = "black",
             vjust=-0.5)
 bar_sex2
+#6-1) 성별에 따른 취업자 분포_전체
+final_df$성별<-as.factor(final_df$성별)
+final_df$취업유무<-as.factor(final_df$취업유무)
+
+bar_sex2<-ggplot(data=final_df,aes(x=성별,group=취업유무,fill=취업유무))+
+  geom_bar(position = 'dodge' )  +
+  labs(title="성별에 따른 취업 유무 분포")+
+  scale_x_discrete(name ="성별", 
+                   labels=c("남자","여자"))+
+  scale_fill_discrete(labels=c('미취업', '취업'))+
+  geom_text(aes(label = after_stat(count),group=취업유무), 
+            stat = "count", 
+            position=position_dodge(width=0.9),
+            colour = "black",
+            vjust=-0.5)
+bar_sex2
 #7) 아이양육자에 따른 취업자 분포
 final_df$아이양육자<-as.factor(final_df$아이양육자)
 final_df$취업유무<-as.factor(final_df$취업유무)
@@ -143,10 +159,12 @@ bar_sex2
 #8) 배우자월평균소득에 따른 취업자 분포
 final_df$g115<-as.factor(final_df$g115)
 
-bar_sex2<-ggplot(data=final_df,aes(x=g115,group=취업유무,fill=취업유무))+
+bar_sex2<-ggplot(data=final_df,aes(x=배우자월평균소득_400미만,group=취업유무,fill=취업유무))+
   geom_bar(position = 'dodge' )  +
-  labs(title="g115에 따른 취업 유무 분포")+
+  labs(title="배우자월평균소득_400미만에 따른 취업 유무 분포")+
   scale_fill_discrete(labels=c('미취업', '취업'))+
+  scale_x_discrete(name ="배우자월평균소득", 
+                   labels=c("400만원 이상","400만원 미만"))+
   geom_text(aes(label = after_stat(count),group=취업유무), 
             stat = "count", 
             position=position_dodge(width=0.9),
