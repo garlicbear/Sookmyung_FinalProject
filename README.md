@@ -4,8 +4,9 @@
 
 
 ## Project
-- 주제: 
+- 주제: 청년 패널 조사: 경시적 자료분석을 통해 임금, 취업에 영향을 주는 요인 알아보기
 - 팀원: 김채형(kimchaehyoung@gmail.com), 최윤서(sycy0220@sookmyung.ac.kr)
+
 ### Project Plan
 > 1주차(~5/14) - 데이터셋 선정/ 주요 질문 선정
 > 
